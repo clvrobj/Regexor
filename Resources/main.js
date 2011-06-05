@@ -4,6 +4,7 @@ Ti.include('model.js');
 
 var MainWinMgr = function () {
     var mgr = this;
+    var font = {fontFamily:'Helvetica Neue', fontSize: 18, fontWeight: 'normal'};
     
     var leftScrollView = Ti.UI.createScrollView(
         {left: 0, width: 360, height: 300,
@@ -18,7 +19,7 @@ var MainWinMgr = function () {
         {systemButton:Titanium.UI.iPhone.SystemButton.DONE});
     var regexInput = Ti.UI.createTextArea(
         {hintText: 'Regex string', top: 5, width: 360, height: 140, backgroundColor: '#888',
-         font:{fontSize:18, fontWeight:'normal'},
+         font: font,
          autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_NONE,
          keyboardToolbar: [regexinputDoneBtn], keyboardToolbarColor: '#757D8A'});
     regexinputDoneBtn.addEventListener('click', function () {regexInput.blur();});
@@ -34,7 +35,7 @@ var MainWinMgr = function () {
         {systemButton:Titanium.UI.iPhone.SystemButton.DONE});
     var dataInput = Ti.UI.createTextArea(
         {hintText: 'Data string', top: 5, width: 360, height: 140, backgroundColor: 'green',
-         font:{fontSize:18, fontWeight:'normal'},
+         font: font,
          suppressReturn: false,
          keyboardToolbar: [doneBtn],
          keyboardToolbarColor: '#757D8A'});
@@ -42,8 +43,11 @@ var MainWinMgr = function () {
     resultView.add(dataInput);
     dataInput.addEventListener('change',
                                 function (e) {
+                                    // TODO timer to delay the render result
                                     mgr.model.setText(e.source.value);
                                 });
+    resultView.input = dataInput;
+    this.resultView = resultView;
 
     mainView.add(regexView);
     mainView.add(resultView);
@@ -89,4 +93,15 @@ MainWinMgr.prototype.init = function () {
 };
 MainWinMgr.prototype.notice = function (data) {
     info(data);
+    this.setResult(data);
+};
+MainWinMgr.prototype.setResult = function (resHtml) {
+    if (this.resultView) {
+        if (!this.resultView.render) {
+            this.resultView.render = Ti.UI.createWebView({});
+            this.resultView.add(this.resultView.render);
+        }
+        this.resultView.render.html = resHtml;
+        this.resultView.input.focus();
+    }
 };
