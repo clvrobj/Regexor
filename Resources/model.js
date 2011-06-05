@@ -49,22 +49,26 @@ var EngineModel = function (pattern, text) {
 extend(EngineModel, BaseModel);
 EngineModel.prototype.match = function () {
     if (this.text && this.text != '') {
-        var matchRes, i = 0, maxLoop = 50, res = [];
-        while ((matchRes = this.pattern.exec(this.text)) != null) {
-            var match = {groups: matchRes, index: matchRes.index};
-            res.push(match);
-            if (i++ > maxLoop) {break;}
+        // var matchRes, i = 0, maxLoop = 50, res = [];
+        // while ((matchRes = this.pattern.exec(this.text)) != null) {
+        //     var match = {groups: matchRes, index: matchRes.index};
+        //     res.push(match);
+        //     if (i++ > maxLoop) {break;}
+        // }
+        // this.notify({result: res});
+        if (this.pattern.test(this.text)) {
+            var text = this.text.replace(this.pattern, '<span style="background-color:#78B6DF">$&</span>');
+            this.notify('<html><body style="font-family:Helvetica Neue;">'.concat(text, '</body></html>'));
         }
-        this.notify({result: res});
     }
 };
 EngineModel.prototype.setPattern = function (pattern) {
     try {
         this.pattern = new RegExp(pattern, 'g');
+        this.match();
     } catch (x) {
         info('exception catched');
     }
-    this.match();
 };
 EngineModel.prototype.setText = function (text) {
     this.text = text;
