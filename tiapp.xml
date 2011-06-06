@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <id>com.zchi.Regexor</id>
-    <name>Regexor</name>
-    <version>1.0</version>
-    <publisher>not specified</publisher>
-    <url>not specified</url>
-    <description>not specified</description>
-    <copyright>not specified</copyright>
-    <icon>appicon.png</icon>
+<id>com.zchi.Regexor</id>
+<name>Regexor</name>
+<version>1.0</version>
+<publisher>zchi</publisher>
+<url>zhangchi.de</url>
+<description>Better RegExp test tool</description>
+<copyright>zchi @ 2011</copyright>
+<icon>default_app_logo.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
     <statusbar-style>default</statusbar-style>
