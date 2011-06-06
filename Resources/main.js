@@ -14,11 +14,11 @@ var MainWinMgr = function () {
         {layout: 'vertical', width: 360, height: 300, backgroundColor: 'red'});
 
     var regexView = Ti.UI.createView(
-        {top: 0, width: 360, height: 150});
+        {top: 0, width: 360, height: 100});
     var regexinputDoneBtn = Titanium.UI.createButton(
         {systemButton:Titanium.UI.iPhone.SystemButton.DONE});
     var regexInput = Ti.UI.createTextArea(
-        {hintText: 'Regex string', top: 5, width: 360, height: 140, backgroundColor: '#888',
+        {hintText: 'Regex string', top: 5, width: 360, height: 90, backgroundColor: '#888',
          font: font,
          autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_NONE,
          keyboardToolbar: [regexinputDoneBtn], keyboardToolbarColor: '#757D8A'});
@@ -30,21 +30,35 @@ var MainWinMgr = function () {
                                 });
 
     var resultView = Ti.UI.createView(
-        {top: 0, width: 360, height: 150});
+        {top: 0, width: 360, height: 200});
     var doneBtn = Titanium.UI.createButton(
         {systemButton:Titanium.UI.iPhone.SystemButton.DONE});
     var dataInput = Ti.UI.createTextArea(
-        {hintText: 'Data string', top: 5, width: 360, height: 140, backgroundColor: 'green',
+        {hintText: 'Data string', top: 5, width: 360, height: 190, backgroundColor: 'green',
          font: font,
          suppressReturn: false,
          keyboardToolbar: [doneBtn],
          keyboardToolbarColor: '#757D8A'});
     doneBtn.addEventListener('click', function () {dataInput.blur();});
+    dataInput.addEventListener('blur',
+                               function (e) {mgr.model.setText(e.value);});
     resultView.add(dataInput);
+
+    var stopStrokeTime = 1.5 * 1000;
+    var stopStrokeHandler = function (text) {
+        mgr.model.setText(text);
+    };
+    var setStopStrokeTimer = function (text) {
+        clearTimeout(mgr.resultView.tHandle);
+        var proxyFunc = function () {
+            return function () {stopStrokeHandler(text);};
+        };
+        mgr.resultView.tHandle = setTimeout(proxyFunc(), stopStrokeTime);
+    };
+
     dataInput.addEventListener('change',
                                 function (e) {
-                                    // TODO timer to delay the render result
-                                    mgr.model.setText(e.source.value);
+                                    setStopStrokeTimer(e.source.value);
                                 });
     resultView.input = dataInput;
     this.resultView = resultView;
@@ -92,16 +106,22 @@ MainWinMgr.prototype.init = function () {
     return this;
 };
 MainWinMgr.prototype.notice = function (data) {
-    info(data);
     this.setResult(data);
 };
 MainWinMgr.prototype.setResult = function (resHtml) {
     if (this.resultView) {
         if (!this.resultView.render) {
-            this.resultView.render = Ti.UI.createWebView({});
+            var mgr = this, render = Ti.UI.createWebView({});
+            render.addEventListener('click',
+                                    function () {
+                                        mgr.resultView.render.hide();
+                                        mgr.resultView.input.focus();
+                                    });
+            this.resultView.render = render;
             this.resultView.add(this.resultView.render);
         }
         this.resultView.render.html = resHtml;
-        this.resultView.input.focus();
+        this.resultView.input.blur();
+        this.resultView.render.show();
     }
 };
