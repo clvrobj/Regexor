@@ -41,10 +41,12 @@ var MainWinMgr = function () {
          keyboardToolbarColor: '#757D8A'});
     doneBtn.addEventListener('click', function () {dataInput.blur();});
     dataInput.addEventListener('blur',
-                               function (e) {mgr.model.setText(e.value);});
+                               function (e) {
+                                   setStopStrokeTimer(e.value);
+                               });
     resultView.add(dataInput);
 
-    var stopStrokeTime = 1.5 * 1000;
+    var stopStrokeTime = 1.7 * 1000;
     var stopStrokeHandler = function (text) {
         mgr.model.setText(text);
     };
@@ -58,7 +60,7 @@ var MainWinMgr = function () {
 
     dataInput.addEventListener('change',
                                 function (e) {
-                                    setStopStrokeTimer(e.source.value);
+                                    setStopStrokeTimer(e.value);
                                 });
     resultView.input = dataInput;
     this.resultView = resultView;
@@ -106,9 +108,9 @@ MainWinMgr.prototype.init = function () {
     return this;
 };
 MainWinMgr.prototype.notice = function (data) {
-    this.setResult(data);
+    this.showResult(data);
 };
-MainWinMgr.prototype.setResult = function (resHtml) {
+MainWinMgr.prototype.showResult = function (resHtml) {
     if (this.resultView) {
         if (!this.resultView.render) {
             var mgr = this, render = Ti.UI.createWebView({});

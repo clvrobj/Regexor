@@ -48,11 +48,14 @@ var EngineModel = function (pattern, text) {
 };
 extend(EngineModel, BaseModel);
 EngineModel.prototype.match = function () {
-    if (this.text && this.text != '') {
+    if (this.pattern && this.text && (this.text != '')) {
+        var text = this.text;
         if (this.pattern.test(this.text)) {
-            var text = this.text.replace(this.pattern, '<span style="background-color:#78B6DF">$&</span>');
-            this.notify('<html><body style="font-family:Helvetica Neue;font-size:18px;">'.concat(text, '</body></html>'));
+            text = this.text.replace(this.pattern, '<span style="background-color:#78B6DF">$&</span>');
         }
+        text = text.replace(/\n/g, '<br>'); // solve the new line in html
+        this.resultHtml = '<html><body style="font-family:Helvetica Neue;font-size:18px;">'.concat(text, '</body></html>');
+        this.notify(this.resultHtml);
     }
 };
 EngineModel.prototype.setPattern = function (pattern) {
@@ -66,8 +69,10 @@ EngineModel.prototype.setPattern = function (pattern) {
     }
 };
 EngineModel.prototype.setText = function (text) {
-    if (text && text != this.text) {
+    if (text && (text != this.text)) {
         this.text = text;
         this.match();
+    } else {
+        this.notify(this.resultHtml);
     }
 };
