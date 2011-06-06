@@ -28,6 +28,8 @@ var MainWinMgr = function () {
                                 function (e) {
                                     mgr.model.setPattern(e.source.value);
                                 });
+    this.regexView = regexView;
+    this.regexView.input = regexInput;
 
     var resultView = Ti.UI.createView(
         {top: 0, width: 360, height: 200});
@@ -76,14 +78,21 @@ var MainWinMgr = function () {
     var rowHeight = 50,
     toolsTableView = Ti.UI.createTableView(
         {width: 120, height: 300, backgroundColor: '#E5F0FA'});
-    var shortcuts = shortcutsData;
+    var shortcuts = shortcutsData,
+    clickShortcut = function (e) {
+        var text = mgr.regexView.input.value || '';
+        text = text.concat(shortcuts[e.index]);
+        mgr.regexView.input.value = text;
+    };
     for (var i=0, len=shortcuts.length; i<len; i++) {
-        var r = Ti.UI.createTableViewRow({width: 120, height: rowHeight}),
+        var data = shortcuts[i],
+        r = Ti.UI.createTableViewRow({width: 120, height: rowHeight}),
         v = Ti.UI.createView({width: 110, height: rowHeight}),
         title = Ti.UI.createLabel(
-            {text: shortcuts[i], width: 100, height: rowHeight, color:'#346091'});
+            {text: data, width: 100, height: rowHeight, color:'#346091'});
         v.add(title);
         r.add(v);
+        r.addEventListener('click', clickShortcut);
         toolsTableView.appendRow(r);
         rightScrollView.add(toolsTableView);
     }
