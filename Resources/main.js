@@ -72,25 +72,33 @@ var MainWinMgr = function () {
     leftScrollView.add(mainView);
 
     var rightScrollView = Ti.UI.createScrollView(
-        {left: 0, width: 120, height: 300,
+        {left: 360, width: 120, height: 300,
          contentWidth: 'auto',contentHeight: 'auto',
 	     showVerticalScrollIndicator:true});
-    var rowHeight = 50,
+    var rowHeight = 60,
     toolsTableView = Ti.UI.createTableView(
         {width: 120, height: 300, backgroundColor: '#E5F0FA'});
     var shortcuts = shortcutsData,
     clickShortcut = function (e) {
         var text = mgr.regexView.input.value || '';
-        text = text.concat(shortcuts[e.index]);
+        text = text.concat(shortcuts[e.index].text);
         mgr.regexView.input.value = text;
+        mgr.regexView.input.focus();
     };
     for (var i=0, len=shortcuts.length; i<len; i++) {
         var data = shortcuts[i],
         r = Ti.UI.createTableViewRow({width: 120, height: rowHeight}),
-        v = Ti.UI.createView({width: 110, height: rowHeight}),
+        v = Ti.UI.createView({layout: 'vertical', width: 110, height: rowHeight - 10}),
         title = Ti.UI.createLabel(
-            {text: data, width: 100, height: rowHeight, color:'#346091'});
+            {text: data.text, width: 100, height: 23, color:'#346091',
+             font: {fontSize: 18}});
         v.add(title);
+        if (data.hint && data.hint != '') {
+            var hint = Ti.UI.createLabel(
+                {text: data.hint, width: 100, height: 27, color: '#7F7F7F',
+                 font: {fontSize: 12}});
+            v.add(hint);
+        }
         r.add(v);
         r.addEventListener('click', clickShortcut);
         toolsTableView.appendRow(r);
@@ -98,7 +106,7 @@ var MainWinMgr = function () {
     }
 
     this.window = Ti.UI.createWindow(
-        {layout: 'horizontal', navBarHidden: true, tabBarHidden: true});
+        {navBarHidden: true, tabBarHidden: true});
     
     this.window.add(leftScrollView);
     this.window.add(rightScrollView);
