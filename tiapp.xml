@@ -14,7 +14,7 @@
     <statusbar-hidden>false</statusbar-hidden>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
-    <analytics>true</analytics>
+    <analytics>false</analytics>
 <guid>8bef73d4-e6de-4efe-8a2c-c840633584a1</guid>
 	<iphone>
 		<orientations device="iphone">

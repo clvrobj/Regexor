@@ -5,8 +5,9 @@ Ti.include('model.js');
 var MainWinMgr = function () {
     var mgr = this;
     var font = {fontFamily:'Helvetica Neue', fontSize: 18, fontWeight: 'normal'};
-    
-    var leftScrollView = Ti.UI.createScrollView(
+
+    // use a scroll view to let view level up when kbd show up    
+    var leftView = Ti.UI.createScrollView(
         {left: 0, width: 360, height: 300,
          contentWidth: 'auto',contentHeight: 'auto',
 	     showVerticalScrollIndicator:true});
@@ -69,7 +70,7 @@ var MainWinMgr = function () {
 
     mainView.add(regexView);
     mainView.add(resultView);
-    leftScrollView.add(mainView);
+    leftView.add(mainView);
 
     var rightScrollView = Ti.UI.createScrollView(
         {left: 360, width: 120, height: 300,
@@ -78,6 +79,9 @@ var MainWinMgr = function () {
     var rowHeight = 60,
     toolsTableView = Ti.UI.createTableView(
         {width: 120, height: 300, backgroundColor: '#E5F0FA'});
+    toolsTableView.addEventListener('scroll', function () {
+                                        regexInput.blur();
+                                    });
     var shortcuts = shortcutsData,
     clickShortcut = function (e) {
         var text = mgr.regexView.input.value || '';
@@ -108,7 +112,7 @@ var MainWinMgr = function () {
     this.window = Ti.UI.createWindow(
         {navBarHidden: true, tabBarHidden: true});
     
-    this.window.add(leftScrollView);
+    this.window.add(leftView);
     this.window.add(rightScrollView);
 
     this.model = new EngineModel('', '');
